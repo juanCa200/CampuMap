@@ -1,0 +1,636 @@
+<!doctype html>
+<html xml:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css"
+		integrity="sha384-QYIZto+st3yW+o8+5OHfT6S482Zsvz2WfOzpFSXMF9zqeLcFV0/wlZpMtyFcZALm" crossorigin="anonymous">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+	<title>Proyecto de Software</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+		* {
+			margin: 0;
+			padding: 0;
+			font-family: 'Poppins', sans-serif;
+			box-sizing: border-box;
+		}
+
+		body {
+			background-color: #0f0f0f;
+			overflow: hidden;
+		}
+
+		#map {
+			top: 0;
+			margin-left: 0;
+			box-shadow: 20px 20px 50px rgba(173, 176, 175, 0.3);
+		}
+
+		.leaflet-marker-icon {
+			background-color: #EC3030;
+			border: 2px solid black;
+			border-radius: 50%;
+		}
+
+		.leaflet-routing-container {
+			background-color: rgba(0, 0, 255, 0.2);
+			border: 2px solid #0000ff;
+		}
+
+		.leaflet-container,
+		.leaflet-tile-pane {
+			background-color: transparent;
+			/* Cambia este color según tus preferencias */
+		}
+
+		@keyframes markerAnimation {
+			from {
+				transform: scale(0);
+			}
+
+			to {
+				transform: scale(1);
+			}
+		}
+
+		.leaflet-marker-icon {
+			animation: markerAnimation 0.5s ease-in-out;
+			/* Aplicar la animación */
+		}
+
+
+		@keyframes animate {
+
+			0%,
+			10%,
+			100% {
+				width: 0;
+			}
+
+			70%,
+			90% {
+				width: 27%;
+			}
+		}
+
+		.titulo {
+			color: #EC3030;
+		}
+
+		.button {
+			color: aliceblue;
+		}
+
+		.text {
+			color: #0f0f0f;
+		}
+		
+		.sidebar{
+			position:fixed;
+			top:0;
+			left:0;
+			height:100%;
+			width:250px;
+			padding: 10px 14px;
+			background:#fff;
+			z-index:1;
+			transition:all 0.5s ease;
+			cursor:pointer;
+		}
+		
+		.sidebar header{
+			position:relative;
+		}
+		
+		.sidebar .text{
+			font-size:16px;
+			font-weight: 500;
+			color:darkgray;
+		}
+		
+		.sidebar li{
+			height:50px;
+			margin-top:10px;
+			list-style:none;
+			display:flex;
+			align-items:center;
+		}
+		
+		.sidebar li .icon{
+			display:flex;
+			align-items:center;
+			min-width:60px;
+			font-size:20px;
+			justify-content:center;
+		}
+		.sidebar li .icon,
+		.sidebar li .text{
+			color:#707070;
+			transition:all 0.2s ease;
+		}
+		
+		.sidebar .image{
+			min-width:60px;
+			display:flex;
+			align-items:center;	
+		}
+		
+		.sidebar .image-text img{
+			width:40px;
+			border-radius:6px;
+		}
+		
+		.sidebar header .image-text{
+			display:flex;
+			align-items:center;
+		}
+		
+		header .image-text .header-text{
+			display:flex;
+			flex-direction:column;
+		}
+		
+		.header-text .name{
+			font-weight:600;
+		}
+		.header-text .profession{
+			 margin-top:-2px;
+		}
+		
+		.sidebar header .toggle{
+			position:absolute;
+			top:50%;
+			right:-25px;
+			transform:translateY(-50%);
+			height:25px;
+			width:25px;
+			background:#EC3030;
+			display:flex;
+			align-items:center;
+			justify-content:center;
+			border-radius:50%;
+			color:#fff;
+			font-size:22px;
+		}
+		
+		.sidebar .search-box{
+			background:#f6f5ff;
+		}
+		
+		.search-box input{
+			height:100%;
+			width:100%;
+			border:none;
+			outline:none;
+			background:#f6f5ff;
+			border-radius:6px;
+		}
+		
+		.sidebar li a{
+			height:100%;
+			width:100%;
+			display:flex;
+			align-items:center;
+			text-decoration:none;
+			border-radius:6px;
+			transition:all 0.4s ease;
+		}
+		
+		.sidebar li a:hover{
+			background:black;
+		}
+		
+		.sidebar li a:hover .icon,
+		.sidebar li a:hover .text{
+			color:#fff;
+		}
+		
+		.custom-combobox {
+      display: inline-block;
+      position: relative;
+      font-family: Arial, sans-serif;
+      width: 150px; 
+      height: 40px; 
+    }
+    .custom-combobox select {
+      width: 100%;
+      height: 100%;
+      padding: 5px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .sidebar.close{
+	width:88px;
+}
+.sidebar.close .text{
+	opacity:0;
+}
+
+.sidebar.close .box{
+		opacity:0;
+
+}
+		
+		.pop-image{
+			position: fixed;
+			top:0;
+			left:0;
+			background:rgba(0,0,0,.9);
+			height:100%;
+			width:100%;
+			z-index:100;
+		}
+		
+		
+		.pop-image span{
+			position:absolute;
+			top:0;
+			right:10px;
+			font-size:60px;
+			font-weight:bolder;
+			color:#fff;
+			cursor:pointer;
+			z-index:inherit;
+		}
+		
+		.pop-image img{
+			position:absolute;
+			top:50%;
+			left:50%;
+			transform:translate(-50%,-50%);
+			border:5px solid #fff;
+			border-radius:5px;
+			width:750px;
+			object-fit:cover;
+		}
+		
+		
+		@media (max-width:768px){
+				.pop-image img{
+					width:95%;
+				}
+
+		}
+		
+		
+.image-container {
+    
+    position: fixed;
+    bottom: 20px;
+    left: 10%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.text-container .image-container #imagenSalon {
+    border-radius: 5px;
+}
+
+	
+.text-container {
+    flex-grow: 1;
+    margin-left: 10px;
+    
+}
+#audio-container {
+  position: relative;
+}
+
+#audio-container button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+	</style>
+
+</head>
+
+<body>
+
+<div id="audio-container">
+    <audio id="background-music">
+      <source src="images/utilidades/fondo.mp3" type="audio/mp3">
+    </audio>
+    <button id="mute-button"><i class="fa-solid fa-volume-off"></i></button>
+  </div>
+
+	<div class="container">
+		<div id="map" style=" width: 100%; height: 100%; position: absolute; z-index: -1; top: 0; left: 0;"></div>
+		
+		<div id="imagenContainer" style="display:none; margin-left:50%; margin-top:40%;" class="image-container" >
+			<img id="imagenSalon" src="" style=" width: 20%; height: 20%; z-index: 1; margin:auto; cursor:pointer">
+		<div class="text-container">
+			<div id="nombreSalon"></div>
+			<h5>Universidad de los LLanos</h5>
+		</div>
+		</div>
+		
+		
+		<div id="imagenContainer" style="display:none" class="pop-image">
+			<span>&times;</span>
+			<img id="imagenSalon" src="" style="z-index: 1;">
+		</div>
+		
+		<nav class="sidebar close">
+			<header>
+				<div class="image-text">
+					<span class="image">
+						<img src="images/utilidades/estudio.png" alt="estudio">
+					</span>
+					<div class="text header-text">
+						<span class="name">CampusMap</span>
+						<span class="profession">Proyecto Software</span>
+					</div>
+					<i class='bx bx-chevron-right toggle'></i>
+			</header>
+			<div class="menu-bar">
+				<div class="menu">
+						<li class="search-box">
+							<i class='bx bx-search icon' style="background:#EC3030; color:white ; padding:10px; border-radius:15px; margin-right:3px;"  onclick="enviarInformacion()"></i>
+							<div class="custom-combobox box">
+								<select id="salonesSelect">
+									<option th:each="salon: ${salones}" th:data-latitud="${salon.latitud}" th:data-longitud="${salon.longitud}"
+										th:data-imagen="${salon.image}" th:data-nombre="${salon.nombre}"  th:text="${salon.nombre}"></option>
+								</select>
+							</div>
+						</li>
+					<ul class="menu-links">
+						<li class="nav-link">
+							<a th:href="@{/}">
+							    <i class='bx bx-calendar-week icon' ></i>
+								<span class="text nav-text">Inicio</span>
+							</a>
+						</li>
+						<li class="nav-link">
+							<a th:href="@{/evento}">
+							    <i class='bx bx-task icon'></i>
+								<span class="text nav-text">Eventos</span>
+							</a>
+						</li>
+						<li class="nav-link">
+							<a th:href="@{/naturaleza}">
+								<i class='bx bx-photo-album icon'></i>
+								<span class="text nav-text">Naturaleza</span>
+							</a>
+						</li>
+						<li class="nav-link">
+							<a th:href="@{/notificaciones}">
+								<i class='bx bx-bell icon'></i>
+								<span class="text nav-text">Notificaciones</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<form method="post" th:action="@{/login}">
+				<div class="bottom-content" onclick="this.parentNode.submit();">
+					<li class="">
+						<a href="#">
+							<i class='bx bx-log-out icon'></i>
+							<span class="text nav-text">Salir</span>
+						</a>
+					</li>
+				</div>
+			 </form>
+				</nav>
+	</div>
+	
+	<script>
+	
+	
+	document.addEventListener('DOMContentLoaded', function () {
+  var music = document.getElementById('background-music');
+  var muteButton = document.getElementById('mute-button');
+
+  muteButton.addEventListener('click', function () {
+    if (music.paused) {
+      music.play();
+      
+      muteButton.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; 
+      
+    } else {
+      music.pause();
+      muteButton.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; 
+
+    }
+  });
+  
+});
+
+document.querySelectorAll('.image-container img').forEach(image =>{
+	image.onclick = ()  =>{
+			document.querySelector('.pop-image').style.display='block';
+	        document.querySelector('.pop-image img').src = image.getAttribute('src');
+	}
+})
+
+
+    document.querySelector('.pop-image span').onclick = () =>{
+	document.querySelector('.pop-image').style.display='none';
+}
+
+
+	  const body = document.querySelector("body"),
+	  sidebar = body.querySelector(".sidebar"),
+	  toggle = body.querySelector(".toggle")
+	  searchBtn = body.querySelector(".search-box")
+
+	  toggle.addEventListener("click",() =>{
+		sidebar.classList.toggle("close");
+	})
+	  
+		var latitudMínima = 4.06978;
+		var longitudMínima = -73.5751;
+		var latitudMáxima = 4.07982;
+		var longitudMáxima = -73.58905;
+		var centroLatitud = (latitudMínima + latitudMáxima) / 2;
+		var centroLongitud = (longitudMínima + longitudMáxima) / 2;
+		var nivelZoomInicial = 17;
+
+		var bounds = L.latLngBounds([latitudMínima, longitudMínima], [latitudMáxima, longitudMáxima], 10);
+
+		var map = L.map('map', {
+			maxBounds: bounds,
+			maxBoundsViscosity: 1.0,
+		}).setView([centroLatitud, centroLongitud], 17);
+
+
+L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
+	maxZoom: 19,
+		minZoom: 17,
+	ext: 'png'
+}).addTo(map);
+
+		var aulas = [
+			{nombre: 'Edificio Albert Einstein', latitud: 4.07420, longitud: -73.58390, iconUrl: '/images/utilidades/estudio.png'},
+			{nombre: 'Bloque 2', latitud:4.07457,longitud:-73.58467, iconUrl: '/images/utilidades/estudio.png'},
+			{nombre: 'Bloque 3', latitud: 4.07426,longitud: -73.58463, iconUrl: '/images/utilidades/estudio.png'},
+			{nombre: 'Labs Fisica', latitud:4.07402,longitud:-73.58462, iconUrl: '/images/utilidades/fisica.png'},			
+			{nombre: 'Bloque 5', latitud:4.07372,longitud:-73.58468, iconUrl: '/images/utilidades/estudio.png'},						
+			{nombre: 'Bloque 6', latitud:4.07337,longitud:-73.58459, iconUrl: '/images/utilidades/estudio.png'},									
+			{nombre: 'Bloque 7', latitud:4.07369,longitud:-73.58487, iconUrl: '/images/utilidades/estudio.png'},												
+			{nombre: 'Bloque 8', latitud:4.07394,longitud:-73.58506, iconUrl: '/images/utilidades/estudio.png'},															
+			{nombre: 'Bloque 13', latitud:4.07415,longitud:-73.58552, iconUrl: '/images/utilidades/estudio.png'},															
+			{nombre: 'Bloque 12', latitud:4.07449,longitud:-73.58554, iconUrl: '/images/utilidades/estudio.png'},																		
+			{nombre: 'Bloque 14', latitud:4.07398,longitud:-73.58540, iconUrl: '/images/utilidades/estudio.png'},															
+			{nombre: 'Bloque 15', latitud:4.07372,longitud:-73.58532, iconUrl: '/images/utilidades/estudio.png'},															
+			{nombre: 'Bloque 18', latitud:4.07412,longitud:-73.58590, iconUrl: '/images/utilidades/estudio.png'},															
+			{nombre: 'Bloque 27', latitud:4.07318, longitud:-73.58508, iconUrl: '/images/utilidades/estudio.png'},																		
+			{nombre: 'Lab Quimica', latitud:4.07474, longitud:-73.58469, iconUrl: '/images/utilidades/quimica.png'},			
+			{nombre: 'Entrada 3', latitud: 4.07512, longitud: -73.58568, iconUrl: '/images/utilidades/entrada.png'},
+			{nombre: 'Entrada 4', latitud: 4.07450, longitud :-73.58638, iconUrl: '/images/utilidades/entrada.png'},			
+			{nombre: 'Entrada 2', latitud: 4.07585, longitud :-73.58489, iconUrl: '/images/utilidades/entrada.png'},						
+			{nombre: 'Labs Electronica', latitud: 4.07434,longitud : -73.58589, iconUrl: '/images/utilidades/electronica.png'},
+			{nombre: 'Labs Computación', latitud: 4.07478, longitud:-73.58397, iconUrl: '/images/utilidades/computacion.png'},
+			{nombre: 'Clinica Veterinaria', latitud: 4.07398,longitud: -73.58656, iconUrl: '/images/utilidades/veterinaria.png'},			
+			{nombre: 'Cancha de Futbol', latitud: 4.07215,longitud:-73.58344, iconUrl: '/images/utilidades/cancha.png'},			
+			{nombre: 'Coliseo', latitud: 4.07212,longitud :-73.58422, iconUrl: '/images/utilidades/coliseo.png'},			
+			{nombre: 'Polideportivo', latitud: 4.07230,longitud:-73.58481, iconUrl: '/images/utilidades/cancha.png'},						
+			{nombre: 'Comedor', latitud:4.07428, longitud:-73.58513, iconUrl: '/images/utilidades/comedor.png'},
+			{nombre: 'Cafeteria', latitud:4.07379,longitud :-73.58605, iconUrl: '/images/utilidades/comedor.png'},
+			{nombre: 'Cafeteria', latitud:4.07472,longitud:-73.58560, iconUrl: '/images/utilidades/comedor.png'},			
+			{nombre: 'Bloque 18', latitud: 4.07412, longitud:-73.58590, iconUrl: '/images/utilidades/estudio.png'},
+			{nombre: 'Labs Microbiologia/Entomologia', latitud: 4.07375,longitud:-73.58580, iconUrl: '/images/utilidades/estudio.png'},
+			{nombre: 'Biblioteca', latitud: 4.07528,longitud: -73.58501, iconUrl: '/images/utilidades/biblioteca.png'},
+			{nombre: 'Parqueadero', latitud: 4.07486, longitud : -73.58525, iconUrl: '/images/utilidades/parqueadero.png'},
+			{nombre: 'Parqueadero', latitud: 4.07435,longitud:-73.58434, iconUrl: '/images/utilidades/parqueadero.png'},
+			{nombre: 'Parqueadero', latitud: 4.07349,longitud:-73.58552, iconUrl: '/images/utilidades/parqueadero.png'},
+			{nombre: 'Pre Universitario', latitud: 4.07454,longitud:-73.58512, iconUrl: '/images/utilidades/informacion.png'},
+			{nombre: 'Piscina', latitud: 4.07310,longitud:-73.58544, iconUrl: '/images/utilidades/piscina.png'},
+			{nombre: 'Falcutad de Ciencias Basicas', latitud: 4.07415, longitud:-73.58451, iconUrl: '/images/utilidades/facultad.png'},
+			{nombre: 'Bloque 21', latitud: 4.07467,longitud:-73.58591, iconUrl: '/images/utilidades/estudio.png'},
+			{nombre: 'Bloque 20', latitud: 4.07450,longitud:-73.58593, iconUrl: '/images/utilidades/estudio.png'},
+
+		]
+		aulas.forEach(function (aula) {
+			var customIcon = L.icon({
+				iconUrl: aula.iconUrl,
+				iconSize: [40, 40],
+				iconAnchor: [16, 32],
+				popupAnchor: [0, -32]
+			});
+
+			L.marker([aula.latitud, aula.longitud], {icon: customIcon}).addTo(map)
+				.bindPopup(aula.nombre);
+		});
+		
+
+	 var routingControl;
+	
+	function enviarInformacion() {   
+       
+       var select = document.getElementById("salonesSelect");
+    var selectedOption = select.options[select.selectedIndex];
+
+    // Obtener el nombre de la imagen asociada al elemento seleccionado
+    var nombreImagen = selectedOption.getAttribute("data-imagen");
+    var nombre = selectedOption.getAttribute("data-nombre");
+
+
+    // Construir la URL completa de la imagen
+    var imagenUrl = "images/"+ nombreImagen;
+
+    // Mostrar la imagen en el contenedor
+    var imagenContainer = document.getElementById("imagenContainer");
+    var imagenSalon = document.getElementById("imagenSalon");
+    var nombreSalon = document.getElementById("nombreSalon");
+
+    if (nombreImagen) {
+        imagenSalon.src = imagenUrl;
+        imagenContainer.style.display = "flex";
+        nombreSalon.textContent = nombre;
+    } else {
+        imagenContainer.style.display = "none";
+    }
+       
+       
+       if (routingControl) {
+            map.removeControl(routingControl);
+        }
+       
+        var selectElement = document.getElementById('salonesSelect');
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var latitud = selectedOption.getAttribute('data-latitud');
+        var longitud = selectedOption.getAttribute('data-longitud');
+
+       routingControl = configurarRoutingControl(latitud, longitud);
+    }
+
+    function configurarRoutingControl(latitud, longitud) {
+        var control = L.Routing.control({
+            waypoints: [
+            	L.latLng(4.07512, -73.58568),
+                L.latLng(parseFloat(latitud), parseFloat(longitud)),
+            ],
+            createMarker: function () { return null; },
+            routeWhileDragging: true,
+            router: new L.Routing.osrmv1({
+                serviceUrl: 'https://router.project-osrm.org/route/v1',
+            }),
+            lineOptions: {
+                styles: [{ color: 'white', opacity: 1, weight: 5 }]
+            },
+            show: false
+        }).addTo(map);
+        
+        return control;
+    }
+		
+
+		map.zoomControl.remove();
+
+		var zonaCoordinates = [
+			[4.07571,-73.58511],
+			[4.07379,-73.58723],
+			[4.07059, -73.58249],
+			[4.07097, -73.5798],
+			[4.07528, -73.57944],
+			[4.07817, -73.58193],
+			[4.07767,-73.58226]
+		];
+
+		// Crea un polígono para encerrar la zona
+		var zonaPolygon = L.polygon(zonaCoordinates, {
+			color: '#EC3030', // Color del borde del polígono
+			fillColor: 'transparent', // Color de relleno del polígono
+			fillOpacity: 0.3, // Opacidad del relleno del polígono (0-1)
+		}).addTo(map);
+
+		zonaPolygon.bindPopup("Área de estudio");
+
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+
+		Swal.fire({
+			title: '<b class="titulo">¡Bienvenidos a CampusMap!</b>',
+			html: '<b class="rojo">Estimados estudiantes de la Unillanos, nos complace darles la bienvenida a esta plataforma que ha sido diseñada con el propósito de facilitar la localización y la navegación hacia los diferentes salones que conforman el Campus Barcelona.</b>',
+			icon: 'info',
+			confirmButtonColor: '#EC3030',
+			confirmButtonBorder: 'black'
+		})
+
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+Esto esta basado en 5 simples Instrucciones.
+
+1. Descargar el editor de codigo y compilador Intellij DEA version Community : https://www.jetbrains.com/idea/download/?section=windows 
+
+2. Descargar Mysql Workbench : https://www.mysql.com/products/workbench/
+¡Importante! Al momento de la instalacion poner el puerto 3307 con usuario root y contraseña 123456. 
+
+3. Una vez instalado eso, descomprima el rar que se le envio y abralo en el Intellid DEA
+se instalaran automaticamente paquetes apenas lo abra. 
+
+4. Ponga este SQL en la base de datos 
+
+
+
+/* Bloque 2 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"AulaB2-1.jpeg","4.07457","-73.58467","Aula B2-1"),(0,"AulaB2-2.jpeg","4.07457","-73.58467","Aula B2-2"),(0,"Herbario.jpeg","4.07457","-73.58467","Herbario"),(0,"LabControlBiologico.jpeg","4.07457","-73.58467","Lab. Control Biologico"); 
+
+/*Bloque 3 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"AulaB3-1.jpeg","4.07426","-73.58463","Aula B3-1"),(0,"AulaB3-2.jpeg","4.07426","-73.58463","Aula B3-2"),(0,"AulaB3-3.jpeg","4.07426","-73.58463","Aula B3-3"),(0,"AulaB3-4.jpeg","4.07426","-73.58463","Aula B3-4"); 
+
+/* Albert Einstein Piso 1 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"AulaE4-101.jpeg","4.07416","-73.58409","Aula E4-101"),(0,"AulaE4-102.jpeg","4.07416","-73.58409","Aula E4-102"),(0,"AulaE4-103.jpeg","4.07416","-73.58409","Aula E4-103"),(0,"Aula115A.jpeg","4.07416","-73.58409","Aula 115A"),(0,"Aula114A.jpeg","4.07416","-73.58409","Aula 114A"); 
+
+/* Albert Einstein Piso 2 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"Aula212A.jpeg","4.07416","-73.58409","Aula 212A"),(0,"Aula213A.jpeg","4.07416","-73.58409","Aula 213A"),(0,"Aula214A.jpeg","4.07416","-73.58409","Aula 214A"),(0,"Aula215A.jpeg","4.07416","-73.58409","Aula 215A"),(0,"Aula215B.jpeg","4.07416","-73.58409","Aula 215B"); 
+
+/* Albert Einstein Piso 3 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"AulaE4-301.jpeg","4.07416","-73.58409","Aula E4-301"),(0,"AulaE4-302.jpeg","4.07416","-73.58409","Aula E4-302"),(0,"AulaE4-303.jpeg","4.07416","-73.58409","Aula E4-303"),(0,"AulaE4-304.jpeg","4.07416","-73.58409","Aula E4-304"),(0,"Aula312A.jpeg","4.07416","-73.58409","Aula 312A"); 
+
+/* Bloque 12 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"AulaB12-1.jpeg","4.07446","-73.58552","Aula B12-1"),(0,"AulaB12-2.jpeg","4.07446","-73.58552","Aula B12-2"),(0,"AulaB12-3.jpeg","4.07446","-73.58552","Aula B12-3"),(0,"AulaB12-4.jpeg","4.07446","-73.58552","Aula B12-4");
+
+/* Lab Quimica */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"LaboratorioA.jpeg","4.07446","-73.58552","Laboratorio A"),(0,"LaboratorioB.jpeg","4.07446","-73.58552","Laboratorio B"),(0,"LaboratorioC.jpeg","4.07446","-73.58552","Laboratorio C"),(0,"LaboratorioDeInstrumentaciónQuímica.jpeg","4.07446","-73.58552","Laboratorio De Instrumentación Química");  
+
+/* Bloque 4 */
+insert into salones (disponibilidad,image,latitud,longitud,nombre) values (0,"Lab1física.jpeg","4.07402","-73.58462","Lab 1 física"),(0,"Lab2física.jpeg","4.07402","-73.58462","Lab 2 física");  
+
+/* Para crear un usuario */
+
+insert into usuarios (codigo,password) values ("160004728","$2a$04$pdSfY.VoOEZxc21xyuL5ie3ItCgx2Os/MjkIOrqcoxT22pH8xNgLS
+");
+
+
+5. Dele correr en el compilador Intellij Dea, y vaya al puerto  http://localhost:8080/login
+
+6. En el login ponga como codigo y contraseña ponga 160004728 
